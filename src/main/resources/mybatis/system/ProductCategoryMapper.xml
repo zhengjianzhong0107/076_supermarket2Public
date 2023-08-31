@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.category.mapper.ProductCategoryMapper">
+    
+    <resultMap type="ProductCategory" id="ProductCategoryResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+    </resultMap>
+
+    <sql id="selectProductCategoryVo">
+        select id, name from product_category
+    </sql>
+
+    <select id="selectProductCategoryList" parameterType="ProductCategory" resultMap="ProductCategoryResult">
+        <include refid="selectProductCategoryVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+        </where>
+      ORDER by id desc
+    </select>
+    
+    <select id="selectProductCategoryById" parameterType="Long" resultMap="ProductCategoryResult">
+        <include refid="selectProductCategoryVo"/>
+        where id = #{id}
+    </select>
+
+  <select id="selectNameById" resultType="java.lang.String">
+    select name from product_category
+    where id = #{id}
+  </select>
+
+  <insert id="insertProductCategory" parameterType="ProductCategory" useGeneratedKeys="true" keyProperty="id">
+        insert into product_category
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProductCategory" parameterType="ProductCategory">
+        update product_category
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProductCategoryById" parameterType="Long">
+        delete from product_category where id = #{id}
+    </delete>
+
+    <delete id="deleteProductCategoryByIds" parameterType="String">
+        delete from product_category where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

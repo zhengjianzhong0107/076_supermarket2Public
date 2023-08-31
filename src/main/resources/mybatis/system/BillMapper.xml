@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.bill.mapper.BillMapper">
+    
+    <resultMap type="Bill" id="BillResult">
+        <result property="id"    column="id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="productName"    column="product_name"    />
+        <result property="categoryId"    column="category_id"    />
+        <result property="categoryName"    column="category_name"    />
+        <result property="purchasePrice"    column="purchase_price"    />
+        <result property="salePrice"    column="sale_price"    />
+        <result property="profits"    column="profits"    />
+        <result property="number"    column="number"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectBillVo">
+        select id, product_id, product_name, category_id, category_name, purchase_price, sale_price, profits, number, create_time from bill
+    </sql>
+
+    <select id="selectBillList" parameterType="Bill" resultMap="BillResult">
+        <include refid="selectBillVo"/>
+        <where>  
+            <if test="productId != null  and productId != ''"> and product_id = #{productId}</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="categoryId != null "> and category_id = #{categoryId}</if>
+            <if test="categoryName != null  and categoryName != ''"> and category_name like concat('%', #{categoryName}, '%')</if>
+            <if test="purchasePrice != null "> and purchase_price = #{purchasePrice}</if>
+            <if test="salePrice != null "> and sale_price = #{salePrice}</if>
+            <if test="profits != null "> and profits = #{profits}</if>
+            <if test="number != null "> and number = #{number}</if>
+        </where>
+        ORDER by id desc
+    </select>
+    
+    <select id="selectBillById" parameterType="Long" resultMap="BillResult">
+        <include refid="selectBillVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBill" parameterType="Bill" useGeneratedKeys="true" keyProperty="id">
+        insert into bill
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productId != null">product_id,</if>
+            <if test="productName != null">product_name,</if>
+            <if test="categoryId != null">category_id,</if>
+            <if test="categoryName != null">category_name,</if>
+            <if test="purchasePrice != null">purchase_price,</if>
+            <if test="salePrice != null">sale_price,</if>
+            <if test="profits != null">profits,</if>
+            <if test="number != null">number,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productId != null">#{productId},</if>
+            <if test="productName != null">#{productName},</if>
+            <if test="categoryId != null">#{categoryId},</if>
+            <if test="categoryName != null">#{categoryName},</if>
+            <if test="purchasePrice != null">#{purchasePrice},</if>
+            <if test="salePrice != null">#{salePrice},</if>
+            <if test="profits != null">#{profits},</if>
+            <if test="number != null">#{number},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBill" parameterType="Bill">
+        update bill
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="categoryName != null">category_name = #{categoryName},</if>
+            <if test="purchasePrice != null">purchase_price = #{purchasePrice},</if>
+            <if test="salePrice != null">sale_price = #{salePrice},</if>
+            <if test="profits != null">profits = #{profits},</if>
+            <if test="number != null">number = #{number},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBillById" parameterType="Long">
+        delete from bill where id = #{id}
+    </delete>
+
+    <delete id="deleteBillByIds" parameterType="String">
+        delete from bill where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

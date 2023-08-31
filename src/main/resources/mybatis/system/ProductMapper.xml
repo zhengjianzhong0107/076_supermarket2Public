@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.product.mapper.ProductMapper">
+    
+    <resultMap type="com.ruoyi.project.system.product.domain.Product" id="ProductResult">
+        <result property="id"    column="id"    />
+        <result property="categoryId"    column="category_id"    />
+        <result property="providerId"    column="provider_id"    />
+        <result property="name"    column="name"    />
+        <result property="factoryAddress"    column="factory_address"    />
+        <result property="purchasePrice"    column="purchase_price"    />
+        <result property="salePrice"    column="sale_price"    />
+        <result property="stock"    column="stock"    />
+        <association property="categoryName" column="category_id"
+          select="com.ruoyi.project.system.category.mapper.ProductCategoryMapper.selectNameById"/>
+      <association property="providerName" column="provider_id"
+        select="com.ruoyi.project.system.provider.mapper.ProductProviderMapper.selectNameById"/>
+    </resultMap>
+
+    <sql id="selectProductVo">
+        select id, category_id, provider_id, name, factory_address, purchase_price, sale_price, stock from product
+    </sql>
+
+    <select id="selectProductList" parameterType="Product" resultMap="ProductResult">
+        <include refid="selectProductVo"/>
+        <where>  
+            <if test="categoryId != null "> and category_id = #{categoryId}</if>
+            <if test="providerId != null "> and provider_id = #{providerId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="factoryAddress != null  and factoryAddress != ''"> and factory_address = #{factoryAddress}</if>
+            <if test="purchasePrice != null "> and purchase_price = #{purchasePrice}</if>
+            <if test="salePrice != null "> and sale_price = #{salePrice}</if>
+            <if test="stock != null "> and stock = #{stock}</if>
+        </where>
+      ORDER by auto_id desc
+    </select>
+    
+    <select id="selectProductById" parameterType="String" resultMap="ProductResult">
+        <include refid="selectProductVo"/>
+        where id = #{id}
+    </select>
+
+  <select id="matchProductsByProductId"
+    resultType="com.ruoyi.project.system.product.domain.Product">
+      <include refid="selectProductVo"/>
+      where id like concat('%',#{id}, '%')
+      LIMIT 0,10
+  </select>
+
+  <insert id="insertProduct" parameterType="Product">
+        insert into product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="categoryId != null">category_id,</if>
+            <if test="providerId != null">provider_id,</if>
+            <if test="name != null">name,</if>
+            <if test="factoryAddress != null">factory_address,</if>
+            <if test="purchasePrice != null">purchase_price,</if>
+            <if test="salePrice != null">sale_price,</if>
+            <if test="stock != null">stock,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="categoryId != null">#{categoryId},</if>
+            <if test="providerId != null">#{providerId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="factoryAddress != null">#{factoryAddress},</if>
+            <if test="purchasePrice != null">#{purchasePrice},</if>
+            <if test="salePrice != null">#{salePrice},</if>
+            <if test="stock != null">#{stock},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProduct" parameterType="Product">
+        update product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="providerId != null">provider_id = #{providerId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="factoryAddress != null">factory_address = #{factoryAddress},</if>
+            <if test="purchasePrice != null">purchase_price = #{purchasePrice},</if>
+            <if test="salePrice != null">sale_price = #{salePrice},</if>
+            <if test="stock != null">stock = #{stock},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+  <update id="deductStock">
+    update product set stock = (stock-#{number}) where id = #{productId};
+  </update>
+
+  <delete id="deleteProductById" parameterType="String">
+        delete from product where id = #{id}
+    </delete>
+
+    <delete id="deleteProductByIds" parameterType="String">
+        delete from product where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,11 @@
+INSERT INTO `product_category` (`id`, `name`) VALUES ('2001', '食品');
+INSERT INTO `product_category` (`id`, `name`) VALUES ('2002', '饮料');
+INSERT INTO `product_category` (`id`, `name`) VALUES ('2003', '日用品');
+INSERT INTO `product_category` (`id`, `name`) VALUES ('2004', '数码产品');
+INSERT INTO `product_category` (`id`, `name`) VALUES ('2005', '图书');
+INSERT INTO `product_category` (`id`, `name`) VALUES ('2006', '玩具');
+INSERT INTO `product_category` (`id`, `name`) VALUES ('2007', '电子产品');
+INSERT INTO `product_category` (`id`, `name`) VALUES ('2008', '日常穿搭');
+INSERT INTO `product_category` (`id`, `name`) VALUES ('2009', '卫生健康');
+INSERT INTO `product_category` (`id`, `name`) VALUES ('2010', '汽车内饰');
+INSERT INTO `product_category` (`id`, `name`) VALUES ('2011', '时尚穿搭');
